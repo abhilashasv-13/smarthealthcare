@@ -107,14 +107,22 @@ def push_notification_to_doctor(user_id, data):
 # Register enhancements blueprint
 app.register_blueprint(enhancements_bp)
 
-# Initialize enhancement tables
-init_enhancement_tables()
+# Initialize enhancement tables (Skip on Vercel read-only filesystem)
+if not os.environ.get('VERCEL'):
+    try:
+        init_enhancement_tables()
+    except Exception as e:
+        print(f"Skipping enhancement table init: {e}")
 
 # Register payment blueprint
 app.register_blueprint(payment_bp)
 
-# Initialize payment tables
-init_payment_tables()
+# Initialize payment tables (Skip on Vercel read-only filesystem)
+if not os.environ.get('VERCEL'):
+    try:
+        init_payment_tables()
+    except Exception as e:
+        print(f"Skipping payment table init: {e}")
 
 # ==================== EMAIL — send_doctor_notification() ====================
 import smtplib
